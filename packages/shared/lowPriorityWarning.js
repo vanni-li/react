@@ -19,6 +19,8 @@
  * same logic and follow the same code paths.
  */
 
+ // 开发模式下的错误提示，条件为 false 时输出提示
+
 let lowPriorityWarning = function() {};
 
 if (__DEV__) {

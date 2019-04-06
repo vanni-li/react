@@ -32,6 +32,10 @@ export function createContext<T>(
     }
   }
 
+  // context 只是个对象，带 $$typeof
+  // 带 $$typeof 属性的对象，在 react 中是特殊的对象，包括组件也是这个结构
+  // context 有两个重要的属性 Provider, Consumer
+
   const context: ReactContext<T> = {
     $$typeof: REACT_CONTEXT_TYPE,
     _calculateChangedBits: calculateChangedBits,
@@ -50,6 +54,8 @@ export function createContext<T>(
     Consumer: (null: any),
   };
 
+  // Provider 是带有 $$typeof 的特殊对象
+
   context.Provider = {
     $$typeof: REACT_PROVIDER_TYPE,
     _context: context,
@@ -62,11 +68,18 @@ export function createContext<T>(
     // A separate object, but proxies back to the original context object for
     // backwards compatibility. It has a different $$typeof, so we can properly
     // warn for the incorrect usage of Context as a Consumer.
+
+    // Consumer 也是带 $$typeof 的特殊对象
+
     const Consumer = {
       $$typeof: REACT_CONTEXT_TYPE,
       _context: context,
       _calculateChangedBits: context._calculateChangedBits,
     };
+
+    // Context.Consumer.xxx 很多属性的获取和设置代理代理到 Context
+    // 调用 Context.Consumer.Provider, Context.Consumer.Consumer 时给出提示
+
     // $FlowFixMe: Flow complains about not setting a value, which is intentional here
     Object.defineProperties(Consumer, {
       Provider: {

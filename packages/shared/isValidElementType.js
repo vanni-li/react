@@ -22,6 +22,13 @@ import {
   REACT_EVENT_TARGET_TYPE,
 } from 'shared/ReactSymbols';
 
+// 有效的 Element 类型，也就是组件类型，createElement 传进来的第一个参数
+// 有效值包含：
+// 1. 字符串(div,span这些)
+// 2. 函数：函数组件，class定义的组件 (class定义的组件，typeof 为 function，本质上也是函数)
+// 3. 定义好的一些 Symbol 变量
+// 4. 对象，且 $$typeof 字段为指定的一些 Symbol 变量
+
 export default function isValidElementType(type: mixed) {
   return (
     typeof type === 'string' ||

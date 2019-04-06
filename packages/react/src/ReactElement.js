@@ -46,6 +46,8 @@ function hasValidKey(config) {
   return config.key !== undefined;
 }
 
+// 调用 props.key 时给出提示
+
 function defineKeyPropWarningGetter(props, displayName) {
   const warnAboutAccessingKey = function() {
     if (!specialPropKeyWarningShown) {
@@ -66,6 +68,9 @@ function defineKeyPropWarningGetter(props, displayName) {
     configurable: true,
   });
 }
+
+
+// 调用 props.ref 时给出提示
 
 function defineRefPropWarningGetter(props, displayName) {
   const warnAboutAccessingRef = function() {
@@ -108,7 +113,15 @@ function defineRefPropWarningGetter(props, displayName) {
  * @param {*} props
  * @internal
  */
+
+// 创建 element， element 只是带有 $$typeof: REACT_ELEMENT_TYPE 的普通对象
+// type 为组件类/函数的定义，element 的 type 属性指向组件类 
+
 const ReactElement = function(type, key, ref, self, source, owner, props) {
+
+  // 带有 $$typeof 的对象是特殊对象， $$typeof: REACT_ELEMENT_TYPE 表示组件
+  // 这个对象就是组件的描述
+
   const element = {
     // This tag allows us to uniquely identify this as a React Element
     $$typeof: REACT_ELEMENT_TYPE,
@@ -122,6 +135,8 @@ const ReactElement = function(type, key, ref, self, source, owner, props) {
     // Record the component responsible for creating this element.
     _owner: owner,
   };
+
+  // 定义 DEV only 的属性: _store, _self, _source
 
   if (__DEV__) {
     // The validation flag is currently mutative. We put it on
@@ -168,6 +183,10 @@ const ReactElement = function(type, key, ref, self, source, owner, props) {
  * Create and return a new ReactElement of the given type.
  * See https://reactjs.org/docs/react-api.html#createelement
  */
+
+// 很关键的方法，创建组件
+// type 为组件，可能是自定义的组件类，也可能是 'div' 这些内置组件
+
 export function createElement(type, config, children) {
   let propName;
 
@@ -180,6 +199,9 @@ export function createElement(type, config, children) {
   let source = null;
 
   if (config != null) {
+
+    // 设置 ref 和 key，设置前先检查合法性
+
     if (hasValidRef(config)) {
       ref = config.ref;
     }
@@ -190,6 +212,10 @@ export function createElement(type, config, children) {
     self = config.__self === undefined ? null : config.__self;
     source = config.__source === undefined ? null : config.__source;
     // Remaining properties are added to a new props object
+
+  
+    // 把 config 里的 key, ref, __self, __source 属性放进 props 里
+
     for (propName in config) {
       if (
         hasOwnProperty.call(config, propName) &&
@@ -202,6 +228,9 @@ export function createElement(type, config, children) {
 
   // Children can be more than one argument, and those are transferred onto
   // the newly allocated props object.
+
+  // 除前两个参数外，后面的参数全是 children，获取 children 放进 props 里
+
   const childrenLength = arguments.length - 2;
   if (childrenLength === 1) {
     props.children = children;
@@ -218,6 +247,8 @@ export function createElement(type, config, children) {
     props.children = childArray;
   }
 
+  // 如果组件定义了 defaultProps，把这些值放进 props 里
+
   // Resolve default props
   if (type && type.defaultProps) {
     const defaultProps = type.defaultProps;
@@ -227,6 +258,10 @@ export function createElement(type, config, children) {
       }
     }
   }
+
+
+  // DEV 环境，直接调用 key 和 ref，给出提示
+
   if (__DEV__) {
     if (key || ref) {
       const displayName =
@@ -241,6 +276,9 @@ export function createElement(type, config, children) {
       }
     }
   }
+
+  // 最终返回的值是带 $$typeof 的对象
+
   return ReactElement(
     type,
     key,
@@ -256,6 +294,9 @@ export function createElement(type, config, children) {
  * Return a function that produces ReactElements of a given type.
  * See https://reactjs.org/docs/react-api.html#createfactory
  */
+
+// 创建空的 element，没有 props 和 children
+
 export function createFactory(type) {
   const factory = createElement.bind(null, type);
   // Expose the type on the factory and the prototype so that it can be
@@ -267,6 +308,8 @@ export function createFactory(type) {
   return factory;
 }
 
+
+// 复制 element 并改变 key
 export function cloneAndReplaceKey(oldElement, newKey) {
   const newElement = ReactElement(
     oldElement.type,
@@ -285,6 +328,9 @@ export function cloneAndReplaceKey(oldElement, newKey) {
  * Clone and return a new ReactElement using element as the starting point.
  * See https://reactjs.org/docs/react-api.html#cloneelement
  */
+
+// 复制 element：取原组件的各个属性和props，结合新传进来的 config 和 children，重新创建一个新的 element
+
 export function cloneElement(element, config, children) {
   invariant(
     !(element === null || element === undefined),
@@ -294,8 +340,12 @@ export function cloneElement(element, config, children) {
 
   let propName;
 
+  // props 取原组件的 props
+
   // Original props are copied
   const props = Object.assign({}, element.props);
+
+  // 取原组件的 key, ref, _self, _source, _owner 等值
 
   // Reserved names are extracted
   let key = element.key;
@@ -319,6 +369,8 @@ export function cloneElement(element, config, children) {
     if (hasValidKey(config)) {
       key = '' + config.key;
     }
+
+    // 从组件的 defaultProps 和传进来的 config，设置 props 的值
 
     // Remaining properties override existing props
     let defaultProps;
@@ -363,6 +415,9 @@ export function cloneElement(element, config, children) {
  * @return {boolean} True if `object` is a ReactElement.
  * @final
  */
+
+// 是否是有效的 element：是个对象并且 $$typeof 属性等于 REACT_ELEMENT_TYPE
+
 export function isValidElement(object) {
   return (
     typeof object === 'object' &&

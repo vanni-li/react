@@ -12,6 +12,8 @@ export type Source = {
   lineNumber: number,
 };
 
+// React element 的格式定义， React element 是 React.createElement() 最终返回的对象，也是 jsx 生成的对象
+// type 指向定义组件的类/函数
 export type ReactElement = {
   $$typeof: any,
   type: any,

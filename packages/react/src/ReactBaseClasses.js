@@ -18,6 +18,11 @@ if (__DEV__) {
 /**
  * Base class helpers for the updating state of a component.
  */
+
+// Component 是个构造函数，有 props, context, refs, updater 等属性
+// 原型上有一些方法：setState, forceUpdate
+// updater 是关键，负责组件更新
+
 function Component(props, context, updater) {
   this.props = props;
   this.context = context;
@@ -55,6 +60,7 @@ Component.prototype.isReactComponent = {};
  * @final
  * @protected
  */
+// 调用 updater 的方法更新 state
 Component.prototype.setState = function(partialState, callback) {
   invariant(
     typeof partialState === 'object' ||
@@ -80,6 +86,7 @@ Component.prototype.setState = function(partialState, callback) {
  * @final
  * @protected
  */
+ // 调用 updater 的方法强制更新
 Component.prototype.forceUpdate = function(callback) {
   this.updater.enqueueForceUpdate(this, callback, 'forceUpdate');
 };
@@ -89,6 +96,7 @@ Component.prototype.forceUpdate = function(callback) {
  * we would like to deprecate them, we're not going to move them over to this
  * modern base class. Instead, we define a getter that warns if it's accessed.
  */
+// 废弃的方法给出提示 isMounted, replaceState
 if (__DEV__) {
   const deprecatedAPIs = {
     isMounted: [
@@ -128,6 +136,9 @@ ComponentDummy.prototype = Component.prototype;
 /**
  * Convenience component with default shallow equality check for sCU.
  */
+
+// PureComponent 继承自 Component，目前看和 Component 一致
+
 function PureComponent(props, context, updater) {
   this.props = props;
   this.context = context;

@@ -9,6 +9,7 @@ import warningWithoutStack from 'shared/warningWithoutStack';
 
 const didWarnStateUpdateForUnmountedComponent = {};
 
+// 带组件信息的错误提示
 function warnNoop(publicInstance, callerName) {
   if (__DEV__) {
     const constructor = publicInstance.constructor;
@@ -32,6 +33,7 @@ function warnNoop(publicInstance, callerName) {
   }
 }
 
+// updater 的接口定义，也是 updater 为空时的默认值，调用方法基本都是输出错误提示
 /**
  * This is the abstract API for an update queue.
  */

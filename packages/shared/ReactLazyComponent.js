@@ -7,10 +7,12 @@
  * @flow
  */
 
+// Promise 格式
 export type Thenable<T, R> = {
   then(resolve: (T) => mixed, reject: (mixed) => mixed): R,
 };
 
+// 定义 React.lazy() 返回值的格式
 export type LazyComponent<T> = {
   $$typeof: Symbol | number,
   _ctor: () => Thenable<{default: T}, mixed>,
@@ -25,6 +27,7 @@ type ResolvedLazyComponent<T> = {
   _result: any,
 };
 
+// 组件加载的状态
 export const Pending = 0;
 export const Resolved = 1;
 export const Rejected = 2;

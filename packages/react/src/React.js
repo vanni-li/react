@@ -80,6 +80,7 @@ const React = {
   useRef,
   useState,
 
+  // React.Fragment, React.Suspense 等这些只是普通的 Symbol 变量
   Fragment: REACT_FRAGMENT_TYPE,
   Profiler: REACT_PROFILER_TYPE,
   StrictMode: REACT_STRICT_MODE_TYPE,

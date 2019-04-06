@@ -95,6 +95,9 @@ function getCurrentComponentErrorInfo(parentType) {
  * @param {ReactElement} element Element that requires a key.
  * @param {*} parentType element's parent's type.
  */
+
+// 检测数组里的组件是否有 key，没有给出提示
+
 function validateExplicitKey(element, parentType) {
   if (!element._store || element._store.validated || element.key != null) {
     return;
@@ -184,6 +187,9 @@ function validateChildKeys(node, parentType) {
  *
  * @param {ReactElement} element
  */
+
+// 根据 propTypes 定义的规则检验 props
+
 function validatePropTypes(element) {
   const type = element.type;
   if (type === null || type === undefined || typeof type === 'string') {
@@ -235,6 +241,9 @@ function validatePropTypes(element) {
  * Given a fragment, validate that it can only be provided with fragment props
  * @param {ReactElement} fragment
  */
+
+// 检测 React.Fragment 的 props，除了 children 和 key，还有其他属性就给出错误提示
+
 function validateFragmentProps(fragment) {
   setCurrentlyValidatingElement(fragment);
 
@@ -264,6 +273,9 @@ export function createElementWithValidation(type, props, children) {
 
   // We warn in this case but don't throw. We expect the element creation to
   // succeed and there will likely be errors in render.
+
+  // 组件类型不合法，给出错误提示
+
   if (!validType) {
     let info = '';
     if (
@@ -320,12 +332,15 @@ export function createElementWithValidation(type, props, children) {
   // We don't want exception behavior to differ between dev and prod.
   // (Rendering will throw with a helpful message and as soon as the type is
   // fixed, the key warnings will appear.)
+  
+  // 验证子组建 
   if (validType) {
     for (let i = 2; i < arguments.length; i++) {
       validateChildKeys(arguments[i], type);
     }
   }
 
+  // 验证 props
   if (type === REACT_FRAGMENT_TYPE) {
     validateFragmentProps(element);
   } else {

@@ -37,6 +37,8 @@ function getWrappedName(
   );
 }
 
+// 获取组件的字符串名称
+
 function getComponentName(type: mixed): string | null {
   if (type == null) {
     // Host root, text node or just invalid type.
